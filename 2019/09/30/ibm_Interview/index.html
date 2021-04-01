@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"nonentityboy.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="9月，离职腾讯，回到学校。在牛客刷到IBM的实习生招聘，于是就面试了一下，运气不错恰好过了。下面是我本次面试的面经。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="IBM前端面经">
+<meta property="og:url" content="https://nonentityboy.github.io/2019/09/30/ibm_Interview/index.html">
+<meta property="og:site_name" content="Curtin个人博客">
+<meta property="og:description" content="9月，离职腾讯，回到学校。在牛客刷到IBM的实习生招聘，于是就面试了一下，运气不错恰好过了。下面是我本次面试的面经。">
+<meta property="og:locale">
+<meta property="article:published_time" content="2019-09-30T11:20:43.000Z">
+<meta property="article:modified_time" content="2020-06-20T17:00:14.725Z">
+<meta property="article:author" content="Curtin">
+<meta name="twitter:card" content="summary">
+
+<link rel="canonical" href="https://nonentityboy.github.io/2019/09/30/ibm_Interview/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>IBM前端面经 | Curtin个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Curtin个人博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Curtin个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://nonentityboy.github.io/2019/09/30/ibm_Interview/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Curtin">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Curtin个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          IBM前端面经
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2019-09-30 19:20:43" itemprop="dateCreated datePublished" datetime="2019-09-30T19:20:43+08:00">2019-09-30</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-06-21 01:00:14" itemprop="dateModified" datetime="2020-06-21T01:00:14+08:00">2020-06-21</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>9月，离职腾讯，回到学校。<br>在牛客刷到IBM的实习生招聘，于是就面试了一下，运气不错恰好过了。下面是我本次面试的面经。</p>
+<a id="more"></a>
+<h3 id="IBM-GBS-面经"><a href="#IBM-GBS-面经" class="headerlink" title="IBM GBS 面经"></a>IBM GBS 面经</h3><h4 id="一面（二十五-min-电面-）"><a href="#一面（二十五-min-电面-）" class="headerlink" title="一面（二十五 min 电面 ）"></a>一面（二十五 min 电面 ）</h4><p>Q：腾讯实习做了什么<br>A：Vue+Element UI 手机QQ质量平台管理系统<br>Q：假如能实习 实习时间？<br>A: 随时能入职 可实习一年以上 争取在公司转正<br>HTML 行内元素与块元素<br>CSS 垂直居中如何实现<br>介绍一下 AJAX 步骤呢<br>Vue 生命周期 ? keep-alive?<br>组件传值<br>实习时候Vuex 如何使用？有代码规范吗？<br>A：这个平台是我和导师写…balabala<br>面试官：好，今天面试就到这里了，今天你一面过了，然后明天需要 coding，需要考察一下<br>你的代码能力，对了你英语咋样？<br>A：balabala。</p>
+<h4 id="二面-（-1h-17min-电面-collabedit-平台撸题）"><a href="#二面-（-1h-17min-电面-collabedit-平台撸题）" class="headerlink" title="二面 （ 1h 17min 电面+ collabedit 平台撸题）"></a>二面 （ 1h 17min 电面+ collabedit 平台撸题）</h4><p>——————<br>个人项目相关聊了四十分钟<br>——————</p>
+<ol>
+<li><p>js 实现两个数组一一对应<br>var arrA = [“语文”, “数学”, “英语”]<br>var arrB = [12,25,29]<br>让他变成 语文：12 数学：25 英语：29 的 json 形式</p>
+</li>
+<li><p>找到给定字符串（由小写字符组成）中的最长子串 T ，要求 T 中的每一字符出现次数都<br>不少于 k 。输出 T 的长度。 也就是 K 个重复字符的最长子串 leetcode 395 题<br>(这个题我太菜了没写出来，给面试官沟通了一下写成了下面的形式：<br>求了一个字符串 每个字符出现的次数</p>
+</li>
+<li><p>链表中环的入口节点 2x = n + x 用了这个思想<br>面试官：今天的面试就到这里了，后面等通知 （ ps:听到这个以为自己凉了 2333</p>
+</li>
+</ol>
+<h4 id="三面-（-49-min-电面）"><a href="#三面-（-49-min-电面）" class="headerlink" title="三面 （ 49 min 电面）"></a>三面 （ 49 min 电面）</h4><p>面试官：我对你上次的代码进行了一次review，要不你再说一下这个题的思想：<br>至少有K个重复字符的最长子串？<br>微信小程序底层原理？（简历上有写）<br>MpVue 和 wepy 有啥异同<br>Vue 源码读过没有<br>Mock server<br>https 连接过程<br>UDP 为什么实时性比较强<br>为什么 UDP 有时比 TCP 更有优势（不知道 233333<br>http server 的字段<br>你再上一下 collabedit 平台，再写个题<br>数组中有一个数字出现的次数超过了数组长度的一半，找出这个数<br>面试官：其实我主要做后端，我再考你一些智力题<br>在一个圆桌上放硬币，2 个人比赛看谁最先放不下 （硬币的规格都是一样，..为了保证先放<br>的人赢，如何保证先放的人赢<br>A、B 两个人抓 100 个球，A 先 B 后，一次轮流抓取，每次允许抓球 1、2、4，抓到最后一个球为输，为了保证 A 抓球肯定赢，那 A 第一次需要抓几个<br>面试官介绍了一下部门的业务，我要是入职，需要做 angular4+express 相关<br>面试官：你对自己以后是如何规划的？<br>A:我想以后进入一个做前端工具的团队，或者 node 偏后端一点<br>面试官：考研吗？<br>A:不考研。<br>面试官：什么你不考研？？那我觉得你的规划路线有问题啊<br>A:…因为我觉得做前端工程方面，自己在企业中得到的进步会更大一些，然后自己热爱前端<br>巴拉巴拉<br>面试官：不不不，你还是得考研。</p>
+<p>面完之后，过了两天一面面试官加微信说面试过了，正在走流程录取，让自己要是入职相关<br>随时有问题联系他。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Curtin
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://nonentityboy.github.io/2019/09/30/ibm_Interview/" title="IBM前端面经">https://nonentityboy.github.io/2019/09/30/ibm_Interview/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2018/11/15/JS_inherit/" rel="prev" title="JavaScript中的继承方式">
+      <i class="fa fa-chevron-left"></i> JavaScript中的继承方式
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2019/11/25/JS_copy/" rel="next" title="从赋值深入深浅拷贝原理">
+      从赋值深入深浅拷贝原理 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#IBM-GBS-%E9%9D%A2%E7%BB%8F"><span class="nav-number">1.</span> <span class="nav-text">IBM GBS 面经</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%80%E9%9D%A2%EF%BC%88%E4%BA%8C%E5%8D%81%E4%BA%94-min-%E7%94%B5%E9%9D%A2-%EF%BC%89"><span class="nav-number">1.1.</span> <span class="nav-text">一面（二十五 min 电面 ）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BA%8C%E9%9D%A2-%EF%BC%88-1h-17min-%E7%94%B5%E9%9D%A2-collabedit-%E5%B9%B3%E5%8F%B0%E6%92%B8%E9%A2%98%EF%BC%89"><span class="nav-number">1.2.</span> <span class="nav-text">二面 （ 1h 17min 电面+ collabedit 平台撸题）</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%89%E9%9D%A2-%EF%BC%88-49-min-%E7%94%B5%E9%9D%A2%EF%BC%89"><span class="nav-number">1.3.</span> <span class="nav-text">三面 （ 49 min 电面）</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Curtin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Curtin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"nonentityboy.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="小程序的底层架构，从小程序的由来、到双线程的出现、设计、通信、到基础库、Exparser 框架、再到运行机制、性能优化等等，都是一个个相关而又相互影响的选择。从前端技术选型方案角度考虑，探寻小程序底层机制。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="小程序底层原理刨析">
+<meta property="og:url" content="https://nonentityboy.github.io/2020/06/21/miniprogram-learn/index.html">
+<meta property="og:site_name" content="Curtin个人博客">
+<meta property="og:description" content="小程序的底层架构，从小程序的由来、到双线程的出现、设计、通信、到基础库、Exparser 框架、再到运行机制、性能优化等等，都是一个个相关而又相互影响的选择。从前端技术选型方案角度考虑，探寻小程序底层机制。">
+<meta property="og:locale">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/16/YcL7Is.png">
+<meta property="og:image" content="https://segmentfault.com/img/bVbsq6i?w=2168&amp;h=460">
+<meta property="og:image" content="https://s1.ax1x.com/2020/05/16/YcXdBD.png">
+<meta property="og:image" content="https://segmentfault.com/img/bVbsq3u?w=826&amp;h=429">
+<meta property="article:published_time" content="2020-06-20T17:05:44.000Z">
+<meta property="article:modified_time" content="2020-06-20T17:08:26.322Z">
+<meta property="article:author" content="Curtin">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://s1.ax1x.com/2020/05/16/YcL7Is.png">
+
+<link rel="canonical" href="https://nonentityboy.github.io/2020/06/21/miniprogram-learn/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>小程序底层原理刨析 | Curtin个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Curtin个人博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Curtin个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://nonentityboy.github.io/2020/06/21/miniprogram-learn/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Curtin">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Curtin个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          小程序底层原理刨析
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2020-06-21 01:05:44 / Modified: 01:08:26" itemprop="dateCreated datePublished" datetime="2020-06-21T01:05:44+08:00">2020-06-21</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>小程序的底层架构，从小程序的由来、到双线程的出现、设计、通信、到基础库、Exparser 框架、再到运行机制、性能优化等等，都是一个个相关而又相互影响的选择。从前端技术选型方案角度考虑，探寻小程序底层机制。</p>
+<a id="more"></a>
+<h2 id="01：小程序底层原理"><a href="#01：小程序底层原理" class="headerlink" title="01：小程序底层原理"></a>01：小程序底层原理</h2><h3 id="1-从前端技术选型方案角度考虑，探寻小程序底层机制"><a href="#1-从前端技术选型方案角度考虑，探寻小程序底层机制" class="headerlink" title="1. 从前端技术选型方案角度考虑，探寻小程序底层机制"></a>1. 从前端技术选型方案角度考虑，探寻小程序底层机制</h3><ul>
+<li>用纯客户端原生技术来渲染</li>
+<li>用纯 Web 技术来渲染</li>
+<li>用客户端原生技术与 Web 技术结合的混合技术（简称 Hybrid 技术）来渲染（小程序用这种）<ul>
+<li>扩展 Web 能力，比如像输出框组件（input，textarea）更好控制键盘能力</li>
+<li>体验更好，减轻WebView的渲染工作</li>
+<li>用客户端原生渲染一些复杂组件，提供更好的性能</li>
+</ul>
+</li>
+</ul>
+<blockquote>
+<p>开发者若是直接通过JS操作DOM,那么一些敏感数据就毫无安全可言，微信提供沙箱环境来运行开发者的JS代码，这个环境不能有任何浏览器相关的接口，只能通过 JS 解释执行环境，类似于 HTML5 的 ServiceWorker 启动另一个线程来执行 JS 。</p>
+</blockquote>
+<blockquote>
+<p>这样设计的原因是为了解决管控安全问题，需要阻止开发者试用浏览器window对象，跳转页面，操作DOM，动态执行脚本的开放性接口。</p>
+</blockquote>
+<h3 id="2-双线程模型与双线程通信具体流程"><a href="#2-双线程模型与双线程通信具体流程" class="headerlink" title="2. 双线程模型与双线程通信具体流程"></a>2. 双线程模型与双线程通信具体流程</h3><p><img src="https://s1.ax1x.com/2020/05/16/YcL7Is.png" alt="image"></p>
+<p>这样设计的原因是为了解决管控安全问题，需要阻止开发者试用浏览器window对象，跳转页面，操作DOM，动态执行脚本的开放性接口。</p>
+<p><img src="https://segmentfault.com/img/bVbsq6i?w=2168&amp;h=460" alt=""><br>可以使用客户端系统的 JavaScript 引擎，iOS 下的 JavaScriptCore 框架， 安卓下腾讯 x5 内核提供的 JScore 环境。</p>
+<p>这个沙箱环境提供纯 JavaScript 解释执行环境，没有任何浏览器相关接口。</p>
+<p>这就是小程序双线程模型的由来：</p>
+<ul>
+<li>逻辑层：创建一个单独的线程去执行 JavaScript ，在这里执行的都是小程序业务逻辑的代码，负责逻辑处理、数据请求、接口调用等</li>
+<li>视图层：界面渲染相关的任务全都在 WebView 线程里执行，通过逻辑层代码去控制渲染哪些界面。一个小程序存在多个界面，所以视图层存在多个 WebView 线程</li>
+<li>JSBridge 起到架起上层开发与 Native (系统层）的桥梁，使得小程序可通过 API 使用原生功能，且部分组件为原生组件实现，从而有良好体验</li>
+</ul>
+<p><img src="https://s1.ax1x.com/2020/05/16/YcXdBD.png" alt="image"></p>
+<ul>
+<li>在渲染层把 WXML 转化成对应的 JS 对象。</li>
+<li>在逻辑层发生数据变更的时候，通过宿主环境提供的 setData 方法把数据从逻辑层传递到 Native，再转发到渲染层。</li>
+<li>经过对比前后差异，把差异应用在原来的 DOM 树上，更新界面。我们通过把 WXML 转化为数据，通过 Native 进行转发，来实现逻辑层和渲染层的交互和通信。而这样一个完整的框架，离不开<code>小程序的基础库</code>。</li>
+</ul>
+<h3 id="3-逻辑层和渲染层的交互和通信离不开小程序的基础库Exparser"><a href="#3-逻辑层和渲染层的交互和通信离不开小程序的基础库Exparser" class="headerlink" title="3. 逻辑层和渲染层的交互和通信离不开小程序的基础库Exparser"></a>3. 逻辑层和渲染层的交互和通信离不开小程序的基础库Exparser</h3><p>小程序基础库可以被注入到视图层和逻辑层运行，用于一下几个方面：</p>
+<ul>
+<li>视图层，提供各类组件来组建界面元素</li>
+<li>逻辑层，提供各类 API 来处理各种逻辑</li>
+<li>处理数据绑定、组件系统、事件系统、通信系统等一系列框架逻辑</li>
+</ul>
+<blockquote>
+<p>小程序渲染层和逻辑层是两个线程管理，两个线程各自注入了基础库</p>
+</blockquote>
+<p>小程序的基础库不会被打包在某个小程序的代码包里，会提前内置到微信客户端里，这样可以：</p>
+<ul>
+<li>降低业务小程序的代码包大小</li>
+<li>可以单独修复基础库中的 Bug, 无需修改到业务小程序的代码包</li>
+</ul>
+<h4 id="Expareser框架"><a href="#Expareser框架" class="headerlink" title="Expareser框架"></a>Expareser框架</h4><blockquote>
+<p>Exparser是微信小程序的组件组织框架，内置在小程序基础库中，为小程序的各种组件提供基础的支持。小程序内的所有组件，包括内置组件和自定义组件，都由Exparser组织管理。</p>
+</blockquote>
+<p>Exparser的主要特点包括以下几点：</p>
+<ul>
+<li>基于Shadow DOM模型：模型上与WebComponents的ShadowDOM高度相似，但不依赖浏览器的原生支持，也没有其他依赖库；实现时，还针对性地增加了其他API以支持小程序组件编程。</li>
+<li>可在纯JS环境中运行：这意味着逻辑层也具有一定的组件树组织能力。<br>高效轻量：性能表现好，在组件实例极多的环境下表现尤其优异，同时代码尺寸也较小。</li>
+<li>小程序中，所有节点树相关的操作都依赖于Exparser，包括WXML到页面最终节点树的构建、createSelectorQuery调用和自定义组件特性等。<br>内置组件</li>
+</ul>
+<blockquote>
+<p>基于Exparser框架，小程序内置了一套组件，提供了视图容器类、表单类、导航类、媒体类、开放类等几十种组件。有了这么丰富的组件，再配合WXSS，可以搭建出任何效果的界面。在功能层面上，也满足绝大部分需求。</p>
+</blockquote>
+<h3 id="4-小程序运行机制"><a href="#4-小程序运行机制" class="headerlink" title="4. 小程序运行机制"></a>4. 小程序运行机制</h3><blockquote>
+<p><b>小程序启动会有两种情况，一种是「冷启动」，一种是「热启动」。</b>假如用户已经打开过某小程序，然后在一定时间内再次打开该小程序，此时无需重新启动，只需将后台状态的小程序切换到前台，这个过程就是热启动；冷启动指的是用户首次打开或小程序被微信主动销毁后再次打开的情况，此时小程序需要重新加载启动。</p>
+</blockquote>
+<h4 id="小程序没有重启的概念"><a href="#小程序没有重启的概念" class="headerlink" title="小程序没有重启的概念"></a>小程序没有重启的概念</h4><p>当小程序进入后台，客户端会维持一段时间的运行状态，超过一定时间后（目前是5分钟）会被微信主动销毁<br>当短时间内（5s）连续收到两次以上收到系统内存告警，会进行小程序的销毁。</p>
+<p><img src="https://segmentfault.com/img/bVbsq3u?w=826&amp;h=429" alt=""></p>
+<h3 id="5-什么是JSBridge"><a href="#5-什么是JSBridge" class="headerlink" title="5. 什么是JSBridge"></a>5. 什么是JSBridge</h3><blockquote>
+<p>JavaScript 是运行在一个单独的 JS Context 中（例如，WebView 的 Webkit 引擎、JSCore）。由于这些 Context 与原生运行环境的天然隔离，我们可以将这种情况与 RPC（Remote Procedure Call，远程过程调用）通信进行类比，将 Native 与 JavaScript 的每次互相调用看做一次 RPC 调用。</p>
+</blockquote>
+<p>在 JSBridge 的设计中，可以把前端看做 RPC 的客户端，把 Native 端看做 RPC 的服务器端，从而 JSBridge 要实现的主要逻辑就出现了：通信调用（Native 与 JS 通信） 和句柄解析调用。</p>
+<p><code>作用</code>：主要是给JavaScript提供调用 Native 功能的接口，让混合开发中的前端部分可以方便的使用 Native 功能(例：地址位置、蓝牙、摄像头)</p>
+<p>而且 JSBridge 的功能不止调用 Native 功能这么简单，实际上，JSBridge 就像其名称中的 Bridge 的意义一样，是 Native 和非 Native 之间的桥梁，它的核心是构建 Native 和非 Native 间消息通信的信道，且这个<code>信道是双向</code>的。</p>
+<p>双向通信的信道：</p>
+<ul>
+<li>JS 向 Native 发送消息：调用相关功能，通知 Native 当前 JS 的相关状态等</li>
+<li>Native 向 JS 发送消息：回溯调用结果、消息推送，通知 JS 当前 Native 的状态</li>
+</ul>
+<h3 id="6-开发中性能优化"><a href="#6-开发中性能优化" class="headerlink" title="6. 开发中性能优化"></a>6. 开发中性能优化</h3><p>主要的优化策略可以归纳为三点：</p>
+<ul>
+<li>精简代码，降低WXML结构和JS代码的复杂性；</li>
+<li>合理使用setData调用，减少setData次数和数据量；</li>
+<li>必要时使用分包优化。</li>
+</ul>
+<h4 id="1、setData-工作原理"><a href="#1、setData-工作原理" class="headerlink" title="1、setData 工作原理"></a>1、setData 工作原理</h4><p>小程序的视图层目前使用 WebView 作为渲染载体，而逻辑层是由独立的 JavascriptCore 作为运行环境。在架构上，WebView 和 JavascriptCore 都是独立的模块，并不具备数据直接共享的通道。当前，视图层和逻辑层的数据传输，实际上通过两边提供的 evaluateJavascript 所实现。即用户传输的数据，需要将其转换为字符串形式传递，同时把转换后的数据内容拼接成一份 JS 脚本，再通过执行 JS 脚本的形式传递到两边独立环境。</p>
+<p>而 evaluateJavascript 的执行会受很多方面的影响，数据到达视图层并不是实时的。</p>
+<h4 id="2、常见的-setData-操作错误"><a href="#2、常见的-setData-操作错误" class="headerlink" title="2、常见的 setData 操作错误"></a>2、常见的 setData 操作错误</h4><p>频繁的去 setData在我们分析过的一些案例里，部分小程序会非常频繁（毫秒级）的去setData，其导致了两个后果：Android下用户在滑动时会感觉到卡顿，操作反馈延迟严重，因为 JS 线程一直在编译执行渲染，未能及时将用户操作事件传递到逻辑层，逻辑层亦无法及时将操作处理结果及时传递到视图层；渲染有出现延时，由于 WebView 的 JS 线程一直处于忙碌状态，逻辑层到页面层的通信耗时上升，视图层收到的数据消息时距离发出时间已经过去了几百毫秒，渲染的结果并不实时；<br>每次 setData 都传递大量新数据由setData的底层实现可知，我们的数据传输实际是一次 evaluateJavascript<br>脚本过程，当数据量过大时会增加脚本的编译执行时间，占用 WebView JS 线程， 后台态页面进行<br>setData当页面进入后台态（用户不可见），不应该继续去进行setData，后台态页面的渲染用户是无法感受的，另外后台态页面去setData也会抢占前台页面的执行。</p>
+<h4 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h4><p>分析了小程序的底层架构，从小程序的由来、到双线程的出现、设计、通信、到基础库、Exparser 框架、再到运行机制、性能优化等等，都是一个个相关而又相互影响的选择。关于小程序的底层框架设计，其实涉及到的还有很多，比如自定义组件，原生组件、性能优化等方面，都不是一点能讲完的，还要多看源码，多思考。每一个框架的诞生都有其意义，我们作为开发者能做的不只是会使用这个工具，还应理解它的设计模式。只有这样才不会被工具左右，才能走的更远！</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Curtin
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://nonentityboy.github.io/2020/06/21/miniprogram-learn/" title="小程序底层原理刨析">https://nonentityboy.github.io/2020/06/21/miniprogram-learn/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/02/07/Chrome-DevTools-Tips/" rel="prev" title="Chrome_DevTools使用">
+      <i class="fa fa-chevron-left"></i> Chrome_DevTools使用
+    </a></div>
+      <div class="post-nav-item"></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#01%EF%BC%9A%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%BA%95%E5%B1%82%E5%8E%9F%E7%90%86"><span class="nav-number">1.</span> <span class="nav-text">01：小程序底层原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#1-%E4%BB%8E%E5%89%8D%E7%AB%AF%E6%8A%80%E6%9C%AF%E9%80%89%E5%9E%8B%E6%96%B9%E6%A1%88%E8%A7%92%E5%BA%A6%E8%80%83%E8%99%91%EF%BC%8C%E6%8E%A2%E5%AF%BB%E5%B0%8F%E7%A8%8B%E5%BA%8F%E5%BA%95%E5%B1%82%E6%9C%BA%E5%88%B6"><span class="nav-number">1.1.</span> <span class="nav-text">1. 从前端技术选型方案角度考虑，探寻小程序底层机制</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-%E5%8F%8C%E7%BA%BF%E7%A8%8B%E6%A8%A1%E5%9E%8B%E4%B8%8E%E5%8F%8C%E7%BA%BF%E7%A8%8B%E9%80%9A%E4%BF%A1%E5%85%B7%E4%BD%93%E6%B5%81%E7%A8%8B"><span class="nav-number">1.2.</span> <span class="nav-text">2. 双线程模型与双线程通信具体流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-%E9%80%BB%E8%BE%91%E5%B1%82%E5%92%8C%E6%B8%B2%E6%9F%93%E5%B1%82%E7%9A%84%E4%BA%A4%E4%BA%92%E5%92%8C%E9%80%9A%E4%BF%A1%E7%A6%BB%E4%B8%8D%E5%BC%80%E5%B0%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E5%9F%BA%E7%A1%80%E5%BA%93Exparser"><span class="nav-number">1.3.</span> <span class="nav-text">3. 逻辑层和渲染层的交互和通信离不开小程序的基础库Exparser</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Expareser%E6%A1%86%E6%9E%B6"><span class="nav-number">1.3.1.</span> <span class="nav-text">Expareser框架</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-%E5%B0%8F%E7%A8%8B%E5%BA%8F%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6"><span class="nav-number">1.4.</span> <span class="nav-text">4. 小程序运行机制</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%B2%A1%E6%9C%89%E9%87%8D%E5%90%AF%E7%9A%84%E6%A6%82%E5%BF%B5"><span class="nav-number">1.4.1.</span> <span class="nav-text">小程序没有重启的概念</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#5-%E4%BB%80%E4%B9%88%E6%98%AFJSBridge"><span class="nav-number">1.5.</span> <span class="nav-text">5. 什么是JSBridge</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#6-%E5%BC%80%E5%8F%91%E4%B8%AD%E6%80%A7%E8%83%BD%E4%BC%98%E5%8C%96"><span class="nav-number">1.6.</span> <span class="nav-text">6. 开发中性能优化</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#1%E3%80%81setData-%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86"><span class="nav-number">1.6.1.</span> <span class="nav-text">1、setData 工作原理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#2%E3%80%81%E5%B8%B8%E8%A7%81%E7%9A%84-setData-%E6%93%8D%E4%BD%9C%E9%94%99%E8%AF%AF"><span class="nav-number">1.6.2.</span> <span class="nav-text">2、常见的 setData 操作错误</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%80%BB%E7%BB%93%EF%BC%9A"><span class="nav-number">1.6.3.</span> <span class="nav-text">总结：</span></a></li></ol></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Curtin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Curtin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

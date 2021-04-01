@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"nonentityboy.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="为什么很多编程语言中数组从0开始编号？而不是从1呢？ 从1开始不是更符合人类的思维习惯吗？">
+<meta property="og:type" content="article">
+<meta property="og:title" content="为什么很多编程语言中数组从0开始编号">
+<meta property="og:url" content="https://nonentityboy.github.io/2020/02/03/Array-From-1/index.html">
+<meta property="og:site_name" content="Curtin个人博客">
+<meta property="og:description" content="为什么很多编程语言中数组从0开始编号？而不是从1呢？ 从1开始不是更符合人类的思维习惯吗？">
+<meta property="og:locale">
+<meta property="og:image" content="https://nonentityboy.github.io/2020/02/03/Array-From-1/Snipaste_2020-02-03_20-23-01.jpg">
+<meta property="og:image" content="https://nonentityboy.github.io/2020/02/03/Array-From-1/Snipaste_2020-02-03_20-23-34.jpg">
+<meta property="og:image" content="https://nonentityboy.github.io/2020/02/03/Array-From-1/Snipaste_2020-02-03_20-23-57.jpg">
+<meta property="article:published_time" content="2020-02-03T02:25:20.000Z">
+<meta property="article:modified_time" content="2020-02-06T14:43:09.254Z">
+<meta property="article:author" content="Curtin">
+<meta property="article:tag" content="数据结构">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://nonentityboy.github.io/2020/02/03/Array-From-1/Snipaste_2020-02-03_20-23-01.jpg">
+
+<link rel="canonical" href="https://nonentityboy.github.io/2020/02/03/Array-From-1/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>为什么很多编程语言中数组从0开始编号 | Curtin个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Curtin个人博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Curtin个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://nonentityboy.github.io/2020/02/03/Array-From-1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Curtin">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Curtin个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          为什么很多编程语言中数组从0开始编号
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-02-03 10:25:20" itemprop="dateCreated datePublished" datetime="2020-02-03T10:25:20+08:00">2020-02-03</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-02-06 22:43:09" itemprop="dateModified" datetime="2020-02-06T22:43:09+08:00">2020-02-06</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>为什么很多编程语言中数组从0开始编号？而不是从1呢？ 从1开始不是更符合人类的思维习惯吗？<br><a id="more"></a></p>
+<h1 id="什么是数组？"><a href="#什么是数组？" class="headerlink" title="什么是数组？"></a>什么是数组？</h1><p>数组（Array）是一种<code>线性表</code>数据结构，它用一组<code>连续的内存空间</code>，来存储一组有<code>相同类型</code>的数据。</p>
+<h2 id="线性表"><a href="#线性表" class="headerlink" title="线性表"></a>线性表</h2><p>顾名思义，线性表就是数据排成一条线一样的结构，每个线性表最多只有<code>前</code>和<code>后</code>两个方向。</p>
+<p>除了数组，链表、队列、栈也是<code>线性表结构</code>。</p>
+<p><img src="/2020/02/03/Array-From-1/Snipaste_2020-02-03_20-23-01.jpg" alt="image"></p>
+<h3 id="非线性表"><a href="#非线性表" class="headerlink" title="非线性表"></a>非线性表</h3><p>比如二叉树、堆、图等。之所以是非线性，因为里面数据之间并<code>不是简单的前后关系</code>。<br><img src="/2020/02/03/Array-From-1/Snipaste_2020-02-03_20-23-34.jpg" alt="image"></p>
+<h2 id="连续的内存空间和相同类型的数据"><a href="#连续的内存空间和相同类型的数据" class="headerlink" title="连续的内存空间和相同类型的数据"></a>连续的内存空间和相同类型的数据</h2><p>这两个特性给了数组一个杀手锏的特性：<code>随机访问</code>。</p>
+<p>有利有弊，这两个限制让数组很多操作<code>非常低效</code>。<br>比如在数组<code>添加或删除一个数据</code>，为了保证<code>连续性</code>，需要大量的<code>数据搬移</code>工作。</p>
+<h2 id="如何根据下标随机访问数组元素"><a href="#如何根据下标随机访问数组元素" class="headerlink" title="如何根据下标随机访问数组元素"></a>如何根据下标随机访问数组元素</h2><p>计算机会给每个内存单元分配一个地址，计算机通过地址来访问内存中的数据。<br>当计算机需要随机访问数组中的某个元素时，通过下面的寻址公式，计算出该元素存储的内存地址。</p>
+<p>根据寻址公式：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a[i]_address &#x3D; base_address + i * data_type_size</span><br></pre></td></tr></table></figure>
+<p>比如C语言, 且此时为int类型。此时data_type_size为4个字节。</p>
+<h3 id="纠正错误"><a href="#纠正错误" class="headerlink" title="纠正错误"></a>纠正错误</h3><p>链表适合插入、删除、时间复杂度为O(1)，数组适合查找，查找复杂度为O(1)</p>
+<p>正确表达是：<br>数组支持随机访问，根据下表随机访问的时间复杂度为O(1)</p>
+<h2 id="低效的插入和删除"><a href="#低效的插入和删除" class="headerlink" title="低效的插入和删除"></a>低效的插入和删除</h2><p>如果在数组的开头插入数据，此时时间复杂度为O(n)<br>如果在数组的尾部插入数据，此时时间复杂度为O(1)</p>
+<p>因为我们在每个位置插入元素的概率是一样的。<br>平均时间复杂度：(1 + 2 + 3 +  … + n) / n = O(n)</p>
+<p>如果说数组有序，我们在某个位置插入一个新的元素，就必须按照上面的方法搬移k之后的数据。</p>
+<p>如果数组中存储的数据并没任何规律，此时要将某个数组插入到第k个位置，为了避免大规模的数据搬移，还有个简单的办法是，直接将第k位的数据半到数组元素的最后，把新的元素直接放入第k个位置。<br>此时在第k个位置插入一个元素的时间复杂度为O(1)</p>
+<p><img src="/2020/02/03/Array-From-1/Snipaste_2020-02-03_20-23-57.jpg" alt="image"></p>
+<h2 id="删除操作"><a href="#删除操作" class="headerlink" title="删除操作"></a>删除操作</h2><p>与添加操作类似</p>
+<h2 id="警惕数组访问越界"><a href="#警惕数组访问越界" class="headerlink" title="警惕数组访问越界"></a>警惕数组访问越界</h2><h2 id="容器是否能完全替代数组"><a href="#容器是否能完全替代数组" class="headerlink" title="容器是否能完全替代数组"></a>容器是否能完全替代数组</h2><p>ArrayList可以将<code>数组操作的细节封装起来</code>，且支持<code>动态扩容</code>。</p>
+<p>大部分方法的话，比如申请了一个大小为10的数组，当第11个数据需要存储到数组中，我们就重新分配一块更大的空间，将原来的数据复制过去，再将新的数据插入。</p>
+<p>但扩容操作涉及内存申请和数据搬移，是比较耗时的，所以最好实现确定需要存储的数据大小。</p>
+<p>总结一下：业务开发用容器省时省力，会损失一些性能。但完全不会影响到系统整体的性能。<br>若是开发底层的，比如并发网络框架，性能的优化就必须要做到极致。</p>
+<h2 id="解答开篇"><a href="#解答开篇" class="headerlink" title="解答开篇"></a>解答开篇</h2><p>数组存储的内存模型上，”下标”k 就是”偏移（offset）”</p>
+<p>寻址公式：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a[k]_address &#x3D; base_address + k * type_size</span><br></pre></td></tr></table></figure></p>
+<p>但要是按照从1开始计数：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">a[k]_address &#x3D; base_address + (k-1) * type_size</span><br></pre></td></tr></table></figure><br>此时多了一条减法指令, CPU就多执行一次减法运算. 所以最好从0开始编号.</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Curtin
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://nonentityboy.github.io/2020/02/03/Array-From-1/" title="为什么很多编程语言中数组从0开始编号">https://nonentityboy.github.io/2020/02/03/Array-From-1/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84/" rel="tag"># 数据结构</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/02/03/FE-Study-Again-1/" rel="prev" title="前端知识点巩固（一）">
+      <i class="fa fa-chevron-left"></i> 前端知识点巩固（一）
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/02/03/Linklist-LRU/" rel="next" title="如何实现LRU缓存淘汰算法">
+      如何实现LRU缓存淘汰算法 <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AF%E6%95%B0%E7%BB%84%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">什么是数组？</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BA%BF%E6%80%A7%E8%A1%A8"><span class="nav-number">1.1.</span> <span class="nav-text">线性表</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%9E%E7%BA%BF%E6%80%A7%E8%A1%A8"><span class="nav-number">1.1.1.</span> <span class="nav-text">非线性表</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9E%E7%BB%AD%E7%9A%84%E5%86%85%E5%AD%98%E7%A9%BA%E9%97%B4%E5%92%8C%E7%9B%B8%E5%90%8C%E7%B1%BB%E5%9E%8B%E7%9A%84%E6%95%B0%E6%8D%AE"><span class="nav-number">1.2.</span> <span class="nav-text">连续的内存空间和相同类型的数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A6%82%E4%BD%95%E6%A0%B9%E6%8D%AE%E4%B8%8B%E6%A0%87%E9%9A%8F%E6%9C%BA%E8%AE%BF%E9%97%AE%E6%95%B0%E7%BB%84%E5%85%83%E7%B4%A0"><span class="nav-number">1.3.</span> <span class="nav-text">如何根据下标随机访问数组元素</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BA%A0%E6%AD%A3%E9%94%99%E8%AF%AF"><span class="nav-number">1.3.1.</span> <span class="nav-text">纠正错误</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%8E%E6%95%88%E7%9A%84%E6%8F%92%E5%85%A5%E5%92%8C%E5%88%A0%E9%99%A4"><span class="nav-number">1.4.</span> <span class="nav-text">低效的插入和删除</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%A0%E9%99%A4%E6%93%8D%E4%BD%9C"><span class="nav-number">1.5.</span> <span class="nav-text">删除操作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AD%A6%E6%83%95%E6%95%B0%E7%BB%84%E8%AE%BF%E9%97%AE%E8%B6%8A%E7%95%8C"><span class="nav-number">1.6.</span> <span class="nav-text">警惕数组访问越界</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%B9%E5%99%A8%E6%98%AF%E5%90%A6%E8%83%BD%E5%AE%8C%E5%85%A8%E6%9B%BF%E4%BB%A3%E6%95%B0%E7%BB%84"><span class="nav-number">1.7.</span> <span class="nav-text">容器是否能完全替代数组</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%A7%A3%E7%AD%94%E5%BC%80%E7%AF%87"><span class="nav-number">1.8.</span> <span class="nav-text">解答开篇</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Curtin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Curtin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

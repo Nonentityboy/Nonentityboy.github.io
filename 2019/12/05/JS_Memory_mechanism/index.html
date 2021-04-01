@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"nonentityboy.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="先抛出一个问题？JS中数据如何存储。基本数据类型用栈存储，引用数据类型用堆存储。看起来没毛病，实际上是需要考虑闭包的情况。如果变量存在栈中，函数调用完栈顶空间销毁，闭包变量(闭包变量存在堆内存中)不就没了吗？">
+<meta property="og:type" content="article">
+<meta property="og:title" content="深入挖掘JavaScript内存机制">
+<meta property="og:url" content="https://nonentityboy.github.io/2019/12/05/JS_Memory_mechanism/index.html">
+<meta property="og:site_name" content="Curtin个人博客">
+<meta property="og:description" content="先抛出一个问题？JS中数据如何存储。基本数据类型用栈存储，引用数据类型用堆存储。看起来没毛病，实际上是需要考虑闭包的情况。如果变量存在栈中，函数调用完栈顶空间销毁，闭包变量(闭包变量存在堆内存中)不就没了吗？">
+<meta property="og:locale">
+<meta property="og:image" content="https://ketingl-1256819531.cos.ap-chengdu.myqcloud.com/myblog/Memory_mechanism/1.jpg">
+<meta property="og:image" content="https://ketingl-1256819531.cos.ap-chengdu.myqcloud.com/myblog/Memory_mechanism/2.jpg">
+<meta property="og:image" content="https://ketingl-1256819531.cos.ap-chengdu.myqcloud.com/myblog/Memory_mechanism/3.jpg">
+<meta property="og:image" content="https://ketingl-1256819531.cos.ap-chengdu.myqcloud.com/myblog/Memory_mechanism/4.jpg">
+<meta property="og:image" content="https://ketingl-1256819531.cos.ap-chengdu.myqcloud.com/myblog/Memory_mechanism/5.jpg">
+<meta property="article:published_time" content="2019-12-05T11:58:00.000Z">
+<meta property="article:modified_time" content="2019-12-05T14:22:31.114Z">
+<meta property="article:author" content="Curtin">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://ketingl-1256819531.cos.ap-chengdu.myqcloud.com/myblog/Memory_mechanism/1.jpg">
+
+<link rel="canonical" href="https://nonentityboy.github.io/2019/12/05/JS_Memory_mechanism/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>深入挖掘JavaScript内存机制 | Curtin个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Curtin个人博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Curtin个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://nonentityboy.github.io/2019/12/05/JS_Memory_mechanism/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Curtin">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Curtin个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          深入挖掘JavaScript内存机制
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+              
+
+              <time title="Created: 2019-12-05 19:58:00 / Modified: 22:22:31" itemprop="dateCreated datePublished" datetime="2019-12-05T19:58:00+08:00">2019-12-05</time>
+            </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <p>先抛出一个问题？JS中数据如何存储。<br>基本数据类型用栈存储，引用数据类型用堆存储。<br>看起来没毛病，实际上是需要考虑闭包的情况。如果变量存在栈中，<code>函数调用完栈顶空间销毁</code>，闭包变量(闭包变量存在堆内存中)不就没了吗？<br><a id="more"></a></p>
+<p>具体而言：以下数据类型存储在栈中：</p>
+<ul>
+<li>boolean</li>
+<li>null</li>
+<li>undefined</li>
+<li>number</li>
+<li>string</li>
+<li>symbol</li>
+<li>bigint<blockquote>
+<p>所有的对象数据类型存放在堆中</p>
+</blockquote>
+</li>
+</ul>
+<p>而值得注意的是，对于赋值操作，原始类型的数据直接完整地复制变量值，对象数据类型的数据则是复制引用地址。</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">let</span> obj = &#123; <span class="attr">a</span>: <span class="number">1</span> &#125;;</span><br><span class="line"><span class="keyword">let</span> newObj = obj;</span><br><span class="line">newObj.a = <span class="number">2</span>;</span><br><span class="line"><span class="built_in">console</span>.log(obj.a);<span class="comment">//变成了2</span></span><br></pre></td></tr></table></figure>
+<p>obj 和 newObj 是同一份堆空间的地址，改变newObj，等于改变了共同的堆内存，这时候通过 obj 来获取这块内存的值当然会改变。</p>
+<h3 id="为什么不全部用栈来保存呢？"><a href="#为什么不全部用栈来保存呢？" class="headerlink" title="为什么不全部用栈来保存呢？"></a>为什么不全部用栈来保存呢？</h3><p>首先，对于系统栈来说，它的功能除了保存变量之外，还有创建并切换函数执行上下文的功能。举个例子:<br><figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">f</span>(<span class="params">a</span>) </span>&#123;</span><br><span class="line">  <span class="built_in">console</span>.log(a);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="function"><span class="keyword">function</span> <span class="title">func</span>(<span class="params">a</span>) </span>&#123;</span><br><span class="line">  f(a);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">func(<span class="number">1</span>);</span><br></pre></td></tr></table></figure></p>
+<h3 id="假设用ESP指针来保存当前的执行状态，在系统栈中会产生如下的过程："><a href="#假设用ESP指针来保存当前的执行状态，在系统栈中会产生如下的过程：" class="headerlink" title="假设用ESP指针来保存当前的执行状态，在系统栈中会产生如下的过程："></a>假设用ESP指针来保存当前的执行状态，在系统栈中会产生如下的过程：</h3><ul>
+<li><p>调用func, 将 func 函数的上下文压栈，ESP指向栈顶。</p>
+</li>
+<li><p>执行func，又调用f函数，将 f 函数的上下文压栈，ESP 指针上移。</p>
+</li>
+<li><p>执行完 f 函数，将ESP 下移，f函数对应的栈顶空间被回收。</p>
+</li>
+<li><p>执行完 func，ESP 下移，func对应的空间被回收。</p>
+</li>
+</ul>
+<p><img src="https://ketingl-1256819531.cos.ap-chengdu.myqcloud.com/myblog/Memory_mechanism/1.jpg" alt="image"></p>
+<p>你也看到了，如果采用栈来存储相对基本类型更加复杂的对象数据，那么切换上下文的开销将变得巨大！</p>
+<p>不过堆内存虽然空间大，能存放大量的数据，但与此同时垃圾内存的回收会带来更大的开销,下来就来分析一下堆内存到底是如何进行垃圾回收并进行优化的。</p>
+<h3 id="V8-引擎如何进行垃圾内存的回收？"><a href="#V8-引擎如何进行垃圾内存的回收？" class="headerlink" title="V8 引擎如何进行垃圾内存的回收？"></a>V8 引擎如何进行垃圾内存的回收？</h3><p>JS 语言不像 C/C++, 让程序员自己去开辟或者释放内存,而是采用自己的一套垃圾回收算法进行自动的内存管理。</p>
+<h4 id="V8-内存限制"><a href="#V8-内存限制" class="headerlink" title="V8 内存限制"></a>V8 内存限制</h4><p>V8只能使用系统的一部分内存，具体来说，在64位系统下，V8最多只能分配1.4G, 在 32 位系统中，最多只能分配0.7G。你想想在前端这样的大内存需求其实并不大，但对于后端而言，nodejs如果遇到一个2G多的文件，那么将无法全部将其读入内存进行各种操作了。</p>
+<p>栈内存而言，当ESP指针下移，也就是上下文切换之后，栈顶的空间会自动被回收。但对于堆内存而言就比较复杂了，我们下面着重分析堆内存的垃圾回收。</p>
+<p>上面提到过，所有的对象类型的数据在JS中都是通过堆进行空间分配的。当我们构造一个对象进行赋值操作的时候，其实相应的内存已经分配到了堆上。你可以不断的这样创建对象，让 V8 为它分配空间，直到堆的大小达到上限。</p>
+<h4 id="V8-为什么要给它设置内存上限？明明我的机器大几十G的内存，只能让我用这么一点？"><a href="#V8-为什么要给它设置内存上限？明明我的机器大几十G的内存，只能让我用这么一点？" class="headerlink" title="V8 为什么要给它设置内存上限？明明我的机器大几十G的内存，只能让我用这么一点？"></a>V8 为什么要给它设置内存上限？明明我的机器大几十G的内存，只能让我用这么一点？</h4><p>究其根本，是由两个因素所共同决定的，一个是JS单线程的执行机制，另一个是JS垃圾回收机制的限制。</p>
+<p>JS是单线程运行的，这意味着一旦进入到垃圾回收，那么其它的各种运行逻辑都要暂停; 另一方面垃圾回收其实是非常耗时间的操作，V8 官方是这样形容的:</p>
+<blockquote>
+<p>以 1.5GB 的垃圾回收堆内存为例，V8 做一次小的垃圾回收需要50ms 以上，做一次非增量式(ps:后面会解释)的垃圾回收甚至要 1s 以上</p>
+</blockquote>
+<p>在这么长的时间内，我们的JS代码执行会一直没有响应，造成应用卡顿，导致应用性能和响应能力直线下降。因此，V8 做了一个简单粗暴的选择，那就是限制堆内存，也算是一种权衡的手段，因为大部分情况是不会遇到操作几个G内存这样的场景的。</p>
+<p>想调整这个内存的限制,配置命令如下:</p>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 这是调整老生代这部分的内存，单位是MB。后面会详细介绍新生代和老生代内存</span></span><br><span class="line">node --max-old-space-size=<span class="number">2048</span> xxx.js</span><br></pre></td></tr></table></figure>
+<h3 id="新生代内存的回收"><a href="#新生代内存的回收" class="headerlink" title="新生代内存的回收"></a>新生代内存的回收</h3><p>V8 把堆内存分成了两部分进行处理——新生代内存和老生代内存。顾名思义，新生代就是临时分配的内存，存活时间短， 老生代是常驻内存，存活的时间长。V8 的堆内存，也就是两个内存之和。</p>
+<p><img src="https://ketingl-1256819531.cos.ap-chengdu.myqcloud.com/myblog/Memory_mechanism/2.jpg" alt="image"></p>
+<p>根据这两种不同种类的堆内存，V8 采用了不同的回收策略，来根据不同的场景做针对性的优化。<br>首先是新生代的内存，刚刚已经介绍了调整新生代内存的方法，那它的内存默认限制是多少？在 64 位和 32 位系统下分别为 32MB 和 16MB。够小吧，不过也很好理解，新生代中的变量存活时间短，来了马上就走，不容易产生太大的内存负担，因此可以将它设的足够小。</p>
+<h4 id="新生代的垃圾回收是怎么做的呢？"><a href="#新生代的垃圾回收是怎么做的呢？" class="headerlink" title="新生代的垃圾回收是怎么做的呢？"></a>新生代的垃圾回收是怎么做的呢？</h4><p>先将新生代内存空间一分为二</p>
+<p>其中From部分表示正在使用的内存，To 是目前闲置的内存。</p>
+<p><img src="https://ketingl-1256819531.cos.ap-chengdu.myqcloud.com/myblog/Memory_mechanism/3.jpg" alt="image"></p>
+<p>进行垃圾回收时，V8 将From部分的对象检查一遍，如果是存活对象那么复制到To内存中(在To内存中按照顺序从头放置的)，如果是非存活对象直接回收即可。</p>
+<p>当所有的From中的存活对象按照顺序进入到To内存之后，From 和 To 两者的角色对调，From现在被闲置，To为正在使用，如此循环。<br>那你很可能会问了，直接将非存活对象回收了不就万事大吉了嘛，为什么还要后面的一系列操作？<br>注意，我刚刚特别说明了，在To内存中按照顺序从头放置的，这是为了应对这样的场景:</p>
+<p><img src="https://ketingl-1256819531.cos.ap-chengdu.myqcloud.com/myblog/Memory_mechanism/4.jpg" alt="image"></p>
+<p>深色的小方块代表存活对象，白色部分表示待分配的内存，由于堆内存是连续分配的，这样零零散散的空间可能会导致稍微大一点的对象没有办法进行空间分配，这种零散的空间也叫做内存碎片。刚刚介绍的新生代垃圾回收算法也叫Scavenge算法。</p>
+<p>Scavenge 算法主要就是解决内存碎片的问题，在进行一顿复制之后，To空间变成了这个样子:</p>
+<p><img src="https://ketingl-1256819531.cos.ap-chengdu.myqcloud.com/myblog/Memory_mechanism/5.jpg" alt="image"></p>
+<p>这样就大大方便了后续连续空间的分配。</p>
+<p>不过Scavenge 算法的劣势也非常明显，就是内存只能使用新生代内存的一半，但是它只存放生命周期短的对象，这种对象一般很少，因此时间性能非常优秀。</p>
+<h4 id="老生代内存的回收优势怎么做的？"><a href="#老生代内存的回收优势怎么做的？" class="headerlink" title="老生代内存的回收优势怎么做的？"></a>老生代内存的回收优势怎么做的？</h4><p>刚刚介绍了新生代的回收方式，那么新生代中的变量如果经过多次回收后依然存在，那么就会被放入到老生代内存中，这种现象就叫晋升。</p>
+<p>发生晋升其实不只是这一种原因，我们来梳理一下会有那些情况触发晋升:</p>
+<ul>
+<li>已经经历过一次 Scavenge 回收。</li>
+<li>To（闲置）空间的内存占用超过25%。</li>
+</ul>
+<p>现在进入到老生代的垃圾回收机制当中，老生代中累积的变量空间一般都是很大的，当然不能用Scavenge算法，浪费一半空间不说，对庞大的内存空间进行复制岂不是劳民伤财？</p>
+<p>老生代而言，究竟是采取怎样的策略进行垃圾回收的呢？</p>
+<p>第一步，进行标记-清除。这个过程在《JavaScript高级程序设计(第三版)》中有过详细的介绍，主要分成两个阶段，即标记阶段和清除阶段。首先会遍历堆中的所有对象，对它们做上标记，然后对于代码环境中使用的变量以及被强引用的变量取消标记，剩下的就是要删除的变量了，在随后的清除阶段对其进行空间的回收。<br>当然这又会引发内存碎片的问题，存活对象的空间不连续对后续的空间分配造成障碍。老生代又是如何处理这个问题的呢？</p>
+<p>第二步，整理内存碎片。V8 的解决方式非常简单粗暴，在清除阶段结束后，把存活的对象全部往一端靠拢。</p>
+<p>由于是移动对象，它的执行速度不可能很快，事实上也是整个过程中最耗时间的部分。</p>
+<h4 id="增量标记"><a href="#增量标记" class="headerlink" title="增量标记"></a>增量标记</h4><p>由于JS的单线程机制，V8 在进行垃圾回收的时候，不可避免地会阻塞业务逻辑的执行，倘若老生代的垃圾回收任务很重，那么耗时会非常可怕，严重影响应用的性能。那这个时候为了避免这样问题，V8 采取了增量标记的方案，即将一口气完成的标记任务分为很多小的部分完成，每做完一个小的部分就”歇”一下，就js应用逻辑执行一会儿，然后再执行下面的部分，如果循环，直到标记阶段完成才进入内存碎片的整理上面来。</p>
+<p>经过增量标记之后，垃圾回收过程对JS应用的阻塞时间减少到原来了1 / 6, 可以看到，这是一个非常成功的改进。</p>
+<p>JS垃圾回收的原理最重要的是理解它为什么要这么做，而不仅仅是如何做的。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Curtin
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://nonentityboy.github.io/2019/12/05/JS_Memory_mechanism/" title="深入挖掘JavaScript内存机制">https://nonentityboy.github.io/2019/12/05/JS_Memory_mechanism/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2019/11/28/this/" rel="prev" title="this绑定全面解析">
+      <i class="fa fa-chevron-left"></i> this绑定全面解析
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/02/03/FE-Study-Again-1/" rel="next" title="前端知识点巩固（一）">
+      前端知识点巩固（一） <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%BA%E4%BB%80%E4%B9%88%E4%B8%8D%E5%85%A8%E9%83%A8%E7%94%A8%E6%A0%88%E6%9D%A5%E4%BF%9D%E5%AD%98%E5%91%A2%EF%BC%9F"><span class="nav-number">1.</span> <span class="nav-text">为什么不全部用栈来保存呢？</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%81%87%E8%AE%BE%E7%94%A8ESP%E6%8C%87%E9%92%88%E6%9D%A5%E4%BF%9D%E5%AD%98%E5%BD%93%E5%89%8D%E7%9A%84%E6%89%A7%E8%A1%8C%E7%8A%B6%E6%80%81%EF%BC%8C%E5%9C%A8%E7%B3%BB%E7%BB%9F%E6%A0%88%E4%B8%AD%E4%BC%9A%E4%BA%A7%E7%94%9F%E5%A6%82%E4%B8%8B%E7%9A%84%E8%BF%87%E7%A8%8B%EF%BC%9A"><span class="nav-number">2.</span> <span class="nav-text">假设用ESP指针来保存当前的执行状态，在系统栈中会产生如下的过程：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#V8-%E5%BC%95%E6%93%8E%E5%A6%82%E4%BD%95%E8%BF%9B%E8%A1%8C%E5%9E%83%E5%9C%BE%E5%86%85%E5%AD%98%E7%9A%84%E5%9B%9E%E6%94%B6%EF%BC%9F"><span class="nav-number">3.</span> <span class="nav-text">V8 引擎如何进行垃圾内存的回收？</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#V8-%E5%86%85%E5%AD%98%E9%99%90%E5%88%B6"><span class="nav-number">3.1.</span> <span class="nav-text">V8 内存限制</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#V8-%E4%B8%BA%E4%BB%80%E4%B9%88%E8%A6%81%E7%BB%99%E5%AE%83%E8%AE%BE%E7%BD%AE%E5%86%85%E5%AD%98%E4%B8%8A%E9%99%90%EF%BC%9F%E6%98%8E%E6%98%8E%E6%88%91%E7%9A%84%E6%9C%BA%E5%99%A8%E5%A4%A7%E5%87%A0%E5%8D%81G%E7%9A%84%E5%86%85%E5%AD%98%EF%BC%8C%E5%8F%AA%E8%83%BD%E8%AE%A9%E6%88%91%E7%94%A8%E8%BF%99%E4%B9%88%E4%B8%80%E7%82%B9%EF%BC%9F"><span class="nav-number">3.2.</span> <span class="nav-text">V8 为什么要给它设置内存上限？明明我的机器大几十G的内存，只能让我用这么一点？</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B0%E7%94%9F%E4%BB%A3%E5%86%85%E5%AD%98%E7%9A%84%E5%9B%9E%E6%94%B6"><span class="nav-number">4.</span> <span class="nav-text">新生代内存的回收</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%96%B0%E7%94%9F%E4%BB%A3%E7%9A%84%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%98%AF%E6%80%8E%E4%B9%88%E5%81%9A%E7%9A%84%E5%91%A2%EF%BC%9F"><span class="nav-number">4.1.</span> <span class="nav-text">新生代的垃圾回收是怎么做的呢？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%80%81%E7%94%9F%E4%BB%A3%E5%86%85%E5%AD%98%E7%9A%84%E5%9B%9E%E6%94%B6%E4%BC%98%E5%8A%BF%E6%80%8E%E4%B9%88%E5%81%9A%E7%9A%84%EF%BC%9F"><span class="nav-number">4.2.</span> <span class="nav-text">老生代内存的回收优势怎么做的？</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A2%9E%E9%87%8F%E6%A0%87%E8%AE%B0"><span class="nav-number">4.3.</span> <span class="nav-text">增量标记</span></a></li></ol></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Curtin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Curtin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

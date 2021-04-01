@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.0.0">
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+<link rel="stylesheet" href="/lib/font-awesome/css/all.min.css">
+
+<script id="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"nonentityboy.github.io","root":"/","scheme":"Gemini","version":"7.8.0","exturl":false,"sidebar":{"position":"right","display":"post","padding":18,"offset":12,"onmobile":false},"copycode":{"enable":false,"show_result":false,"style":null},"back2top":{"enable":true,"sidebar":false,"scrollpercent":false},"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"algolia":{"hits":{"per_page":10},"labels":{"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}},"localsearch":{"enable":false,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}}};
+  </script>
+
+  <meta name="description" content="我于 2019 年 7 月份开始在腾讯深圳 PCG 实习了两个多月，在 2019 年 10 月份在 IBM 西安实习至今，在此将所学到的知识分享给大家，我的技术栈为前端。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="实习感悟(在腾讯与 IBM 实习，我学到了什么？)">
+<meta property="og:url" content="https://nonentityboy.github.io/2020/02/05/FE_Intern_think/index.html">
+<meta property="og:site_name" content="Curtin个人博客">
+<meta property="og:description" content="我于 2019 年 7 月份开始在腾讯深圳 PCG 实习了两个多月，在 2019 年 10 月份在 IBM 西安实习至今，在此将所学到的知识分享给大家，我的技术栈为前端。">
+<meta property="og:locale">
+<meta property="og:image" content="https://nonentityboy.github.io/2020/02/05/FE_Intern_think/tencent.jpg">
+<meta property="og:image" content="https://nonentityboy.github.io/2020/02/05/FE_Intern_think/ibm.jpg">
+<meta property="article:published_time" content="2020-02-05T09:05:07.000Z">
+<meta property="article:modified_time" content="2020-02-07T04:32:42.988Z">
+<meta property="article:author" content="Curtin">
+<meta property="article:tag" content="随笔">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://nonentityboy.github.io/2020/02/05/FE_Intern_think/tencent.jpg">
+
+<link rel="canonical" href="https://nonentityboy.github.io/2020/02/05/FE_Intern_think/">
+
+
+<script id="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'zh-Hans'
+  };
+</script>
+
+  <title>实习感悟(在腾讯与 IBM 实习，我学到了什么？) | Curtin个人博客</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  .use-motion .brand,
+  .use-motion .menu-item,
+  .sidebar-inner,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line-before i { left: initial; }
+  .use-motion .logo-line-after i { right: initial; }
+  </style>
+</noscript>
+
+<link rel="alternate" href="/atom.xml" title="Curtin个人博客" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage">
+  <div class="container use-motion">
+    <div class="headband"></div>
+
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+      <span class="toggle-line toggle-line-first"></span>
+      <span class="toggle-line toggle-line-middle"></span>
+      <span class="toggle-line toggle-line-last"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <span class="logo-line-before"><i></i></span>
+      <h1 class="site-title">Curtin个人博客</h1>
+      <span class="logo-line-after"><i></i></span>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+<nav class="site-nav">
+  <ul id="menu" class="main-menu menu">
+        <li class="menu-item menu-item-home">
+
+    <a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a>
+
+  </li>
+        <li class="menu-item menu-item-archives">
+
+    <a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a>
+
+  </li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+
+    <main class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          
+
+          <div class="content post posts-expand">
+            
+
+    
+  
+  
+  <article itemscope itemtype="http://schema.org/Article" class="post-block" lang="zh-Hans">
+    <link itemprop="mainEntityOfPage" href="https://nonentityboy.github.io/2020/02/05/FE_Intern_think/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="Curtin">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="Curtin个人博客">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          实习感悟(在腾讯与 IBM 实习，我学到了什么？)
+        </h1>
+
+        <div class="post-meta">
+            <span class="post-meta-item">
+              <span class="post-meta-item-icon">
+                <i class="far fa-calendar"></i>
+              </span>
+              <span class="post-meta-item-text">Posted on</span>
+
+              <time title="Created: 2020-02-05 17:05:07" itemprop="dateCreated datePublished" datetime="2020-02-05T17:05:07+08:00">2020-02-05</time>
+            </span>
+              <span class="post-meta-item">
+                <span class="post-meta-item-icon">
+                  <i class="far fa-calendar-check"></i>
+                </span>
+                <span class="post-meta-item-text">Edited on</span>
+                <time title="Modified: 2020-02-07 12:32:42" itemprop="dateModified" datetime="2020-02-07T12:32:42+08:00">2020-02-07</time>
+              </span>
+
+          
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+        <blockquote>
+<p>我于 2019 年 7 月份开始在腾讯深圳 PCG 实习了两个多月，在 2019 年 10 月份在 IBM 西安实习至今，在此将所学到的知识分享给大家，我的技术栈为前端。</p>
+</blockquote>
+<a id="more"></a>
+<blockquote>
+<p>希望疫情快快过去，天佑武汉，天佑中华。</p>
+</blockquote>
+<p>我大一时候，我看见身边有一名优秀的学长，大二就在腾讯暑期实习。自己也给自己设定了flag，我也要大二暑期去腾讯实习。</p>
+<p>所以在 2019.4 月，我便开始慢慢面试一些公司的日常实习，期间投递了十余家。当然很多公司一听到我是大二的，便没有了下文。</p>
+<p>有面试之后的实习offer战绩：<br>字节跳动(三面挂)、金山云(二面挂)、搜狗(offer)、网易(offer)、百度(挂过一个部门后又拿了一个部门的offer)、腾讯(IEG挂，PCG offer)，美团(一面挂)。</p>
+<p>2019.9月，大三这学期实验课程非常多，不好安排，所以在腾讯离职了。</p>
+<p>在腾讯这两个月，自己身心也非常的累，自己一直也是象牙塔里面的学生，腾讯的企业文化与生活节奏，使我学习到了非常多的东西（无论是技术上还是见识上）。</p>
+<p>2019.9月底，我开始筹划找11月份的实习，因为那时候实验课比较少。</p>
+<p>战绩：微软(三面挂)，IBM(offer)</p>
+<h1 id="满腔热血"><a href="#满腔热血" class="headerlink" title="满腔热血"></a>满腔热血</h1><p>2019.5 月，我收到了腾讯PCG 2019年暑期实习offer(实际上我在官网投递的是日常实习，后来被暑期实习捞了)，当我本人拿到offer那一瞬间，自己脑子里期盼着即将去公司大展宏图。</p>
+<p>我十分开心，于是也在 7 月开始了自己的深圳之旅。</p>
+<p><img src="/2020/02/05/FE_Intern_think/tencent.jpg" alt="tencent.jpg"></p>
+<h1 id="直面失意"><a href="#直面失意" class="headerlink" title="直面失意"></a>直面失意</h1><p>入职第一天，我被配环境折腾得毫无动力，配了一下午，内心爆炸。</p>
+<p>后来导师的帮助（轻车熟路的十分钟）下，我顺利配完了环境。</p>
+<p>之后在做项目组分配的项目时，自己也更是觉得自己太菜了，周围同事都十分厉害，而我却干啥都不够格。</p>
+<h1 id="不要瞎折腾，多问，及时反馈进度"><a href="#不要瞎折腾，多问，及时反馈进度" class="headerlink" title="不要瞎折腾，多问，及时反馈进度"></a>不要瞎折腾，多问，及时反馈进度</h1><h2 id="在腾讯时"><a href="#在腾讯时" class="headerlink" title="在腾讯时"></a>在腾讯时</h2><p>一开始，我在遇到问题的时候，总喜欢一个人闷头搞，在内网搜文章，搜解决方法，顺着 英文id 在企业微信上私聊其它人（却没有问导师），然而远程解决问题，根本难以真正解决，最终导致自己效率极其低下。</p>
+<p>由于我一直怕影响导师，我看他每天都特别忙（同事、总监、leader各种事情叫他）。</p>
+<p>内心想：“我这样烦导师，会不会不太好啊？”我在与导师谈心的时候聊过这个问题，他的回答让我放下了担忧：“是很烦啊！但是谁不是这样过来的呢？” 是啊，谁不是麻烦别人指导过来的呢？ <code>前辈们也都是通情达理的人，只要遇到问题及时请教前辈们，他们也都会包容你的。</code></p>
+<p>后来我开始有问题可以先查，短时间突然解决不了，就直接向导师或者其他前辈寻求帮助。</p>
+<p>我自己有一个良好的习惯，那就是<code>及时给导师或者项目组leader反馈的自己进度</code>。</p>
+<h2 id="在IBM时"><a href="#在IBM时" class="headerlink" title="在IBM时"></a>在IBM时</h2><p>由于我已经之前有一份实习经历，也是比较有经验的，在IBM时，<code>入职第一天我便快速上手开发</code>，而且我自己在日常开发项目过程中，我觉得我的开发效率是和正式员工相同的。</p>
+<p>在 IBM 时候，我平常喜欢看内网 learning 里面的一些东西，学习一些自己喜欢的知识，以及 IBM 的历史。</p>
+<p><img src="/2020/02/05/FE_Intern_think/ibm.jpg" alt="ibm"></p>
+<h1 id="让别人觉得你靠谱"><a href="#让别人觉得你靠谱" class="headerlink" title="让别人觉得你靠谱"></a>让别人觉得你靠谱</h1><ul>
+<li><code>以正式员工要求自己</code> 与别人交流时不要总担心问题太愚蠢。以一种平等的身份去与人交流，效率就会高很多。当我破除了内心给自己预设的「实习生」枷锁后，我真真切切地感受到了自己思维和态度上的提升。毕竟一名优秀的实习生就是未来的正式员工， <code>与其让时间推动你的成长，不如突破自我设限，以先入为主态度来要求自己。</code></li>
+<li><code>让别人能经常得到你的反馈。</code> 实习生一般都会要求写日报，这就是为了让导师能及时了解你当前的状态。同理，我们在与他人合作时，最好定期主动汇报当前的开发进度，让别人能感受到你正在做事。在开发过程中遇到了问题，及时提出问题并附上自己的思考，让别人了解你面对问题是会主动思考的。如果你不主动去反馈，等别人想起你来催你的话，你就可能会被打上<code>「挤牙膏」</code>的印象。</li>
+<li><code>不轻易做承诺，但承诺必行。</code> 承诺是给别人的定心丸，它的说服力取决于别人是否认为你可靠。而一个满嘴跑火车给承诺的人基本上是不可靠的。同时言出必行是我们营造可靠印象的最佳方式。在公司内，如果一个需求流转到你这里了要进行排期，请给自己预留充足的时间。打比方说一个需求你最终做完需要3天时间，但你当时答应的是两天出货，别人就会认为你不靠谱，但如果你当时答应的是4天，那你就是超出预期。结果虽然相同，但给别人的印象却截然不同。如果在做需求的过程中发现的确做不完了，一定要第一时间反馈给大家，及时采取措施来确保需求顺利完成。如果你选择死扛到上线前一天再说做不完了，造成的损失就不只是别人对你的印象了。</li>
+<li><code>先规划好，再去行动。</code> 在公司内，比较大的需求都会进行评审，这就是为了让大家对整个需求的流程有一个理解和规划。抛离需求不谈，我们在日常写代码之前也应该有这样的前奏。做任何事前先把开发规划做出来，然后给导师审阅。这样其一是可以让导师及时纠正你逻辑的不足之处，其二是可以让导师了解你的思维。</li>
+<li><code>要有团队意识</code> 开发过程中，代码质量，注释的编写，写代码一定要尽可能的去考虑他人感受。多人协作，某些有特定功能的代码都需要清楚注释。同理，如果有一个新 feature 实现了，最好跟进一份文档，来让大家都能弄明白使用方式。</li>
+</ul>
+<h1 id="结语"><a href="#结语" class="headerlink" title="结语"></a>结语</h1><p>2019 这一年，也是我褪去学生气的一年。<br>2020 也希望自己能成为一名合格的前端工程师。</p>
+
+    </div>
+
+    
+    
+    
+        
+
+<div>
+<ul class="post-copyright">
+  <li class="post-copyright-author">
+    <strong>Post author:  </strong>Curtin
+  </li>
+  <li class="post-copyright-link">
+    <strong>Post link: </strong>
+    <a href="https://nonentityboy.github.io/2020/02/05/FE_Intern_think/" title="实习感悟(在腾讯与 IBM 实习，我学到了什么？)">https://nonentityboy.github.io/2020/02/05/FE_Intern_think/</a>
+  </li>
+  <li class="post-copyright-license">
+    <strong>Copyright Notice:  </strong>All articles in this blog are licensed under <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" rel="noopener" target="_blank"><i class="fab fa-fw fa-creative-commons"></i>BY-NC-SA</a> unless stating additionally.
+  </li>
+</ul>
+</div>
+
+
+      <footer class="post-footer">
+          <div class="post-tags">
+              <a href="/tags/%E9%9A%8F%E7%AC%94/" rel="tag"># 随笔</a>
+          </div>
+
+        
+
+
+        
+    <div class="post-nav">
+      <div class="post-nav-item">
+    <a href="/2020/02/04/Vue%E5%86%85%E9%83%A8%E8%BF%90%E8%A1%8C%E6%9C%BA%E5%88%B6/" rel="prev" title="Vue内部运行机制">
+      <i class="fa fa-chevron-left"></i> Vue内部运行机制
+    </a></div>
+      <div class="post-nav-item">
+    <a href="/2020/02/06/sort-num/" rel="next" title="插入排序比冒泡排序更受欢迎？">
+      插入排序比冒泡排序更受欢迎？ <i class="fa fa-chevron-right"></i>
+    </a></div>
+    </div>
+      </footer>
+    
+  </article>
+  
+  
+  
+
+
+
+          </div>
+          
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      let activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      let commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+        </div>
+          
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line toggle-line-first"></span>
+    <span class="toggle-line toggle-line-middle"></span>
+    <span class="toggle-line toggle-line-last"></span>
+  </div>
+
+  <aside class="sidebar">
+    <div class="sidebar-inner">
+
+      <ul class="sidebar-nav motion-element">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <!--noindex-->
+      <div class="post-toc-wrap sidebar-panel">
+          <div class="post-toc motion-element"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%BB%A1%E8%85%94%E7%83%AD%E8%A1%80"><span class="nav-number">1.</span> <span class="nav-text">满腔热血</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%9B%B4%E9%9D%A2%E5%A4%B1%E6%84%8F"><span class="nav-number">2.</span> <span class="nav-text">直面失意</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E4%B8%8D%E8%A6%81%E7%9E%8E%E6%8A%98%E8%85%BE%EF%BC%8C%E5%A4%9A%E9%97%AE%EF%BC%8C%E5%8F%8A%E6%97%B6%E5%8F%8D%E9%A6%88%E8%BF%9B%E5%BA%A6"><span class="nav-number">3.</span> <span class="nav-text">不要瞎折腾，多问，及时反馈进度</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8%E8%85%BE%E8%AE%AF%E6%97%B6"><span class="nav-number">3.1.</span> <span class="nav-text">在腾讯时</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9C%A8IBM%E6%97%B6"><span class="nav-number">3.2.</span> <span class="nav-text">在IBM时</span></a></li></ol></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E8%AE%A9%E5%88%AB%E4%BA%BA%E8%A7%89%E5%BE%97%E4%BD%A0%E9%9D%A0%E8%B0%B1"><span class="nav-number">4.</span> <span class="nav-text">让别人觉得你靠谱</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E7%BB%93%E8%AF%AD"><span class="nav-number">5.</span> <span class="nav-text">结语</span></a></li></ol></div>
+      </div>
+      <!--/noindex-->
+
+      <div class="site-overview-wrap sidebar-panel">
+        <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">Curtin</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap motion-element">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">16</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-tags">
+        <span class="site-state-item-count">6</span>
+        <span class="site-state-item-name">tags</span>
+      </div>
+  </nav>
+</div>
+  <div class="cc-license motion-element" itemprop="license">
+    <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" class="cc-opacity" rel="noopener" target="_blank"><img src="/images/cc-by-nc-sa.svg" alt="Creative Commons"></a>
+  </div>
+
+
+
+      </div>
+
+    </div>
+  </aside>
+  <div id="sidebar-dimmer"></div>
+
+
+      </div>
+    </main>
+
+    <footer class="footer">
+      <div class="footer-inner">
+        
+
+        
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Curtin</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+        
+
+
+
+
+
+
+
+
+      </div>
+    </footer>
+  </div>
+
+  
+  <script src="/lib/anime.min.js"></script>
+  <script src="/lib/velocity/velocity.min.js"></script>
+  <script src="/lib/velocity/velocity.ui.min.js"></script>
+
+<script src="/js/utils.js"></script>
+
+<script src="/js/motion.js"></script>
+
+
+<script src="/js/schemes/pisces.js"></script>
+
+
+<script src="/js/next-boot.js"></script>
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
