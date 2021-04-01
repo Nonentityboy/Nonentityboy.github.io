@@ -34,7 +34,7 @@
 <meta property="og:image" content="https://s1.ax1x.com/2018/02/07/918bVI.jpg">
 <meta property="og:image" content="https://s1.ax1x.com/2018/02/07/918LIP.jpg">
 <meta property="article:published_time" content="2018-11-15T03:20:43.000Z">
-<meta property="article:modified_time" content="2019-12-05T12:19:42.639Z">
+<meta property="article:modified_time" content="2019-12-05T12:19:42.000Z">
 <meta property="article:author" content="Curtin">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://s1.ax1x.com/2018/02/07/91MwdK.jpg">
@@ -203,7 +203,7 @@
 
       
         <h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>继承是OOP的核心内容之一。JavaScript中常见继承方式为：类式继承、构造函数式继承、组合式继承、原型式继承、寄生式继承、寄生组合式继承。</p>
-<a id="more"></a>
+<span id="more"></span>
 <h3 id="类式继承"><a href="#类式继承" class="headerlink" title="类式继承"></a>类式继承</h3><p>类式继承，通过子类的原型prototype对父类的实例化实现。由于子类通过其原型prototype对父类实例化继承了父类，所以父类中的共有属性要是引用类型就会在子类中被所有实例共用。由于子类实现的继承是靠其原型prototype对父类的实例化实现的，因此在创建父类时是无法向父类传递参数的，因而在实例化父类时无法对父类构造函数内的属性进行初始化。</p>
 <figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">&#x2F;&#x2F;声明父类</span><br><span class="line">function SuperClass() &#123;</span><br><span class="line">  this.superValue &#x3D; true;</span><br><span class="line">&#125;</span><br><span class="line">&#x2F;&#x2F;为父类添加共有方法</span><br><span class="line">SuperClass.prototype.getsuperValue &#x3D; function() &#123;</span><br><span class="line">  return this.superValue;</span><br><span class="line">&#125;</span><br><span class="line">&#x2F;&#x2F;声明子类</span><br><span class="line">function SubClass() &#123;</span><br><span class="line">  this.subValue &#x3D; false;</span><br><span class="line">&#125;</span><br><span class="line">&#x2F;&#x2F;继承父类（</span><br><span class="line">SubClass.prototype &#x3D; new SuperClass();</span><br><span class="line">&#x2F;&#x2F;为子类添加共有方法</span><br><span class="line">SubClass.prototype.getsubValue &#x3D; function () &#123;</span><br><span class="line">  return this.subValue;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h3 id="构造函数式继承"><a href="#构造函数式继承" class="headerlink" title="构造函数式继承"></a>构造函数式继承</h3><p>构造函数继承，通过在子类的构造函数作用环境中执行一次父类的构造函数来实现；由于没用涉及prototype，所以父类的原型方法不会被子类继承。要想被子类继承，就得把属性和函数放到父类的构造函数中，并且创建出来的（子类的）实例都会单独拥有一份，违背了 “代码复用”。</p>

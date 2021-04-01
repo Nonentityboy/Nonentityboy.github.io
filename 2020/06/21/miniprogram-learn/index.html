@@ -32,7 +32,7 @@
 <meta property="og:image" content="https://s1.ax1x.com/2020/05/16/YcXdBD.png">
 <meta property="og:image" content="https://segmentfault.com/img/bVbsq3u?w=826&amp;h=429">
 <meta property="article:published_time" content="2020-06-20T17:05:44.000Z">
-<meta property="article:modified_time" content="2020-06-20T17:08:26.322Z">
+<meta property="article:modified_time" content="2020-06-20T17:08:26.000Z">
 <meta property="article:author" content="Curtin">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://s1.ax1x.com/2020/05/16/YcL7Is.png">
@@ -195,7 +195,7 @@
 
       
         <p>小程序的底层架构，从小程序的由来、到双线程的出现、设计、通信、到基础库、Exparser 框架、再到运行机制、性能优化等等，都是一个个相关而又相互影响的选择。从前端技术选型方案角度考虑，探寻小程序底层机制。</p>
-<a id="more"></a>
+<span id="more"></span>
 <h2 id="01：小程序底层原理"><a href="#01：小程序底层原理" class="headerlink" title="01：小程序底层原理"></a>01：小程序底层原理</h2><h3 id="1-从前端技术选型方案角度考虑，探寻小程序底层机制"><a href="#1-从前端技术选型方案角度考虑，探寻小程序底层机制" class="headerlink" title="1. 从前端技术选型方案角度考虑，探寻小程序底层机制"></a>1. 从前端技术选型方案角度考虑，探寻小程序底层机制</h3><ul>
 <li>用纯客户端原生技术来渲染</li>
 <li>用纯 Web 技术来渲染</li>
@@ -214,7 +214,7 @@
 </blockquote>
 <h3 id="2-双线程模型与双线程通信具体流程"><a href="#2-双线程模型与双线程通信具体流程" class="headerlink" title="2. 双线程模型与双线程通信具体流程"></a>2. 双线程模型与双线程通信具体流程</h3><p><img src="https://s1.ax1x.com/2020/05/16/YcL7Is.png" alt="image"></p>
 <p>这样设计的原因是为了解决管控安全问题，需要阻止开发者试用浏览器window对象，跳转页面，操作DOM，动态执行脚本的开放性接口。</p>
-<p><img src="https://segmentfault.com/img/bVbsq6i?w=2168&amp;h=460" alt=""><br>可以使用客户端系统的 JavaScript 引擎，iOS 下的 JavaScriptCore 框架， 安卓下腾讯 x5 内核提供的 JScore 环境。</p>
+<p><img src="https://segmentfault.com/img/bVbsq6i?w=2168&amp;h=460" alt><br>可以使用客户端系统的 JavaScript 引擎，iOS 下的 JavaScriptCore 框架， 安卓下腾讯 x5 内核提供的 JScore 环境。</p>
 <p>这个沙箱环境提供纯 JavaScript 解释执行环境，没有任何浏览器相关接口。</p>
 <p>这就是小程序双线程模型的由来：</p>
 <ul>
@@ -258,7 +258,7 @@
 <p><b>小程序启动会有两种情况，一种是「冷启动」，一种是「热启动」。</b>假如用户已经打开过某小程序，然后在一定时间内再次打开该小程序，此时无需重新启动，只需将后台状态的小程序切换到前台，这个过程就是热启动；冷启动指的是用户首次打开或小程序被微信主动销毁后再次打开的情况，此时小程序需要重新加载启动。</p>
 </blockquote>
 <h4 id="小程序没有重启的概念"><a href="#小程序没有重启的概念" class="headerlink" title="小程序没有重启的概念"></a>小程序没有重启的概念</h4><p>当小程序进入后台，客户端会维持一段时间的运行状态，超过一定时间后（目前是5分钟）会被微信主动销毁<br>当短时间内（5s）连续收到两次以上收到系统内存告警，会进行小程序的销毁。</p>
-<p><img src="https://segmentfault.com/img/bVbsq3u?w=826&amp;h=429" alt=""></p>
+<p><img src="https://segmentfault.com/img/bVbsq3u?w=826&amp;h=429" alt></p>
 <h3 id="5-什么是JSBridge"><a href="#5-什么是JSBridge" class="headerlink" title="5. 什么是JSBridge"></a>5. 什么是JSBridge</h3><blockquote>
 <p>JavaScript 是运行在一个单独的 JS Context 中（例如，WebView 的 Webkit 引擎、JSCore）。由于这些 Context 与原生运行环境的天然隔离，我们可以将这种情况与 RPC（Remote Procedure Call，远程过程调用）通信进行类比，将 Native 与 JavaScript 的每次互相调用看做一次 RPC 调用。</p>
 </blockquote>

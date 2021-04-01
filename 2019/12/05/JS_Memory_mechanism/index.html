@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://ketingl-1256819531.cos.ap-chengdu.myqcloud.com/myblog/Memory_mechanism/4.jpg">
 <meta property="og:image" content="https://ketingl-1256819531.cos.ap-chengdu.myqcloud.com/myblog/Memory_mechanism/5.jpg">
 <meta property="article:published_time" content="2019-12-05T11:58:00.000Z">
-<meta property="article:modified_time" content="2019-12-05T14:22:31.114Z">
+<meta property="article:modified_time" content="2019-12-05T14:22:31.000Z">
 <meta property="article:author" content="Curtin">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://ketingl-1256819531.cos.ap-chengdu.myqcloud.com/myblog/Memory_mechanism/1.jpg">
@@ -195,7 +195,7 @@
     <div class="post-body" itemprop="articleBody">
 
       
-        <p>先抛出一个问题？JS中数据如何存储。<br>基本数据类型用栈存储，引用数据类型用堆存储。<br>看起来没毛病，实际上是需要考虑闭包的情况。如果变量存在栈中，<code>函数调用完栈顶空间销毁</code>，闭包变量(闭包变量存在堆内存中)不就没了吗？<br><a id="more"></a></p>
+        <p>先抛出一个问题？JS中数据如何存储。<br>基本数据类型用栈存储，引用数据类型用堆存储。<br>看起来没毛病，实际上是需要考虑闭包的情况。如果变量存在栈中，<code>函数调用完栈顶空间销毁</code>，闭包变量(闭包变量存在堆内存中)不就没了吗？<br><span id="more"></span></p>
 <p>具体而言：以下数据类型存储在栈中：</p>
 <ul>
 <li>boolean</li>
@@ -237,7 +237,7 @@
 </blockquote>
 <p>在这么长的时间内，我们的JS代码执行会一直没有响应，造成应用卡顿，导致应用性能和响应能力直线下降。因此，V8 做了一个简单粗暴的选择，那就是限制堆内存，也算是一种权衡的手段，因为大部分情况是不会遇到操作几个G内存这样的场景的。</p>
 <p>想调整这个内存的限制,配置命令如下:</p>
-<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 这是调整老生代这部分的内存，单位是MB。后面会详细介绍新生代和老生代内存</span></span><br><span class="line">node --max-old-space-size=<span class="number">2048</span> xxx.js</span><br></pre></td></tr></table></figure>
+<figure class="highlight js"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 这是调整老生代这部分的内存，单位是MB。后面会详细介绍新生代和老生代内存</span></span><br><span class="line">node --max-old-space-size=<span class="number">2048</span> xxx.js </span><br></pre></td></tr></table></figure>
 <h3 id="新生代内存的回收"><a href="#新生代内存的回收" class="headerlink" title="新生代内存的回收"></a>新生代内存的回收</h3><p>V8 把堆内存分成了两部分进行处理——新生代内存和老生代内存。顾名思义，新生代就是临时分配的内存，存活时间短， 老生代是常驻内存，存活的时间长。V8 的堆内存，也就是两个内存之和。</p>
 <p><img src="https://ketingl-1256819531.cos.ap-chengdu.myqcloud.com/myblog/Memory_mechanism/2.jpg" alt="image"></p>
 <p>根据这两种不同种类的堆内存，V8 采用了不同的回收策略，来根据不同的场景做针对性的优化。<br>首先是新生代的内存，刚刚已经介绍了调整新生代内存的方法，那它的内存默认限制是多少？在 64 位和 32 位系统下分别为 32MB 和 16MB。够小吧，不过也很好理解，新生代中的变量存活时间短，来了马上就走，不容易产生太大的内存负担，因此可以将它设的足够小。</p>
